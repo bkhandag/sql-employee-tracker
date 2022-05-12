@@ -2,6 +2,10 @@
 const inquirer = require("inquirer");
 const fs = require("fs");
 const path = require("path");
+// Import and require mysql2
+const mysql = require("mysql2");
+
+const PORT = process.env.PORT || 3001;
 
 const options = require("./utils/options");
 
@@ -21,6 +25,19 @@ const options = require("./utils/options");
 // const EngineerCard = require("./src/EngineerCard");
 // const InternCard = require("./src/InternCard");
 // const Footer = require("./src/Footer");
+
+// Connect to database
+const db = mysql.createConnection(
+    {
+      host: "localhost",
+      // MySQL username,
+      user: "root",
+      // TODO: Add MySQL password here
+      password: "password",
+      database: "employee_tracker_db",
+    },
+    console.log(`Connected to the employee_tracker_db database.`)
+  );
 
 
 // const team = [] //array that I push team members to
@@ -123,21 +140,35 @@ function viewAllDepartments() {
     
 }
 
-function init()) {
+function init() {
   console.log('Initialization');
   // prompt that asks about which option the user wants
   inquirer
   .prompt(options)
   .then((response) => {
 
+    //enquirer prompt, db.query in here.
+
     if (response.option == 'View all Departments') {
-        viewAllDepartments();
+
+        db.query('SELECT * FROM department', function (err, results) {
+        console.table(results);
+    })
+
     } else if (response.option == 'View all Roles') {
-        //
+       
+        db.query('SELECT * FROM roles', function (err, results) {
+        console.table(results);
+    })
+        
     } else if (response.option == 'View all Employees') {
-        //finishTeam();
+        
+        db.query('SELECT * FROM employees', function (err, results) {
+        console.table(results);
+    });
+
     } else if (response.option == 'Add a Department') {
-        addDepartment();
+        //addDepartment();
     } else if (response.option == 'Add a Role') {
         //finishTeam();
     } else if (response.option == 'Add an Employee') {
@@ -157,10 +188,10 @@ function init()) {
     } else if (response.option == 'Delete Employees') {
         //finishTeam();
     } else if (response.option == 'View total budget of department') {
-        viewBudget();
+        //viewBudget();
     }
 });
 }
 
 // // Function call to initialize app
-// init();
+init();
