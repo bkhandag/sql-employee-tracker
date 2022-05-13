@@ -15,7 +15,12 @@ VALUES ("Salesperson", 80000, 3),
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
 VALUES ("Arthur", "Miller", 1, 2),
-       ("Chinua", "Achebe", 6, NULL),
+       ("Chinua", "Achebe" , 3, null),
        ("Margaret", "Atwood", 2, 1),
-       ("Gabriel", "Garcia Marquez", 3, 2),
+       ("Gabriel", "Garcia Marquez", 3 ,2),
        ("Simone", "de Beauvoir", 4, 4);
+
+
+SELECT * FROM department;
+SELECT * FROM role;
+SELECT * FROM employee;

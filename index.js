@@ -1,11 +1,11 @@
 // Include packages needed for this application
-const inquirer = require("inquirer");
+const { prompt } = require("inquirer");
 const fs = require("fs");
 const path = require("path");
 // Import and require mysql2
 const mysql = require("mysql2");
 
-const PORT = process.env.PORT || 3001;
+//const PORT = process.env.PORT || 3001;
 
 const options = require("./utils/options");
 
@@ -143,29 +143,30 @@ function viewAllDepartments() {
 function init() {
   console.log('Initialization');
   // prompt that asks about which option the user wants
-  inquirer
-  .prompt(options)
+//   inquirer
+//   .
+    prompt(options)
   .then((response) => {
 
     //enquirer prompt, db.query in here.
 
     if (response.option == 'View all Departments') {
 
-        db.query('SELECT * FROM department', function (err, results) {
-        console.table(results);
-    })
+        db.promise().query('SELECT * FROM department')
+        .then( ([results]) =>  console.table(results))
+        .then( () => init() );
 
     } else if (response.option == 'View all Roles') {
        
-        db.query('SELECT * FROM roles', function (err, results) {
-        console.table(results);
-    })
-        
+        db.promise().query('SELECT * FROM role')
+        .then( ([results]) =>  console.table(results))
+        .then( () => init() );
+    
     } else if (response.option == 'View all Employees') {
         
-        db.query('SELECT * FROM employees', function (err, results) {
-        console.table(results);
-    });
+        db.promise().query('SELECT * FROM employee')
+        .then( ([results]) =>  console.table(results))
+        .then( () => init() );
 
     } else if (response.option == 'Add a Department') {
         //addDepartment();
