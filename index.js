@@ -254,8 +254,9 @@ const viewEmployees =
                 db.query(managerSql, (err, data) => {
                   if (err) throw err;
   
+                  //created a new array with manager first and last name concatenated.
                   const managers = data.map(({ id, first_name, last_name }) => ({ name: first_name + " "+ last_name, value: id }));
-  
+                  
                   inquirer.prompt([
                     {
                       type: 'list',
@@ -266,6 +267,7 @@ const viewEmployees =
                   ])
                     .then(managerChoice => {
                       const manager = managerChoice.manager;
+                      //added first name, last name of manager, role_id and manager_id to params
                       params.push(manager);
   
                       const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
@@ -275,6 +277,7 @@ const viewEmployees =
                       if (err) throw err;
                       console.log("Employee has been added!")
   
+                      //query to view all employees
                       db.promise().query(viewEmployees)
                       .then( ([results]) =>  console.table(results))
                       .then( () => init() );
