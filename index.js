@@ -172,10 +172,11 @@ const viewEmployees =
                 choices: dept
               }
               ])
-                .then(deptChoice => {
-                  const dept = deptChoice.dept;
+                .then(selectedDept => {
+                  const dept = selectedDept.dept;
                   params.push(dept);
       
+                  //add selected department to new role
                   const sql = `INSERT INTO role (title, salary, department_id)
                               VALUES (?, ?, ?)`;
       
@@ -183,6 +184,7 @@ const viewEmployees =
                     if (err) throw err;
                     console.log('Added' + answer.role + " to roles!"); 
       
+                    //run a query to view all roles
                     db.promise().query(viewRoles)
                     .then( ([results]) =>  console.table(results))
                     .then( () => init() );
@@ -199,6 +201,7 @@ const viewEmployees =
             type: 'input',
             name: 'firstName',
             message: "What is the employee's first name?",
+            //validation to avoid saving null value
             validate: firstName => {
             if (firstName) {
                 return true;
@@ -212,6 +215,7 @@ const viewEmployees =
         type: 'input',
         name: 'lastName',
         message: "What is the employee's last name?",
+        //validation to avoid saving null value
         validate: lastName => {
           if (lastName) {
               return true;
@@ -225,7 +229,7 @@ const viewEmployees =
       .then(answer => {
       const params = [answer.firstName, answer.lastName]
   
-      // grab roles from roles table
+      // get roles from roles table
       const roleSql = `SELECT role.id, role.title FROM role`;
     
       db.query(roleSql, (err, data) => {
@@ -241,8 +245,8 @@ const viewEmployees =
                 choices: roles
               }
             ])
-              .then(roleChoice => {
-                const role = roleChoice.role;
+              .then(selectedRole => {
+                const role = selectedRole.role;
                 params.push(role);
   
                 const managerSql = `SELECT * FROM employee`;
