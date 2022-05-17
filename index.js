@@ -14,93 +14,12 @@ const db = mysql.createConnection(
       host: "localhost",
       // MySQL username,
       user: "root",
-      // TODO: Add MySQL password here
+      // Add MySQL password here
       password: "password",
       database: "employee_tracker_db",
     },
     console.log(`Connected to the employee_tracker_db database.`)
   );
-
-
-// const team = [] //array that I push team members to
-// var generateHTMLFile = ""; //string that is used to generate html file
-
-// // Create a function to write README file
-// function writeToFile(fileName, data) {
-//     fs.writeFile(path.join(process.cwd(), fileName), data, function(err){
-//         err ? console.error(err) : console.log('Success!')});
-// }
-
-// // Create a function to initialize app
-// function init() {
-//   //addManager function call
-//   addManager()
-// }
-
-// function addManager() {
-
-//   inquirer
-//   .prompt(managerQuestions)
-//   .then((response) => {
-//       const newManager = new Manager(
-//           response.name,
-//           response.id,
-//           response.email,
-//           response.officeNumber
-//       )
-//   // add a new Manager to array team;
-//     team.push(newManager);
-//     console.log(team);
-//     nextTeamMember();
-
-
-// });
-// }
-
-// function addEngineer() {
-
-//   inquirer
-//   .prompt(engineerQuestions)
-//   .then((response) => {
-//     const newEngineer = new Engineer (
-//       response.name,
-//       response.id,
-//       response.email,
-//       response.github
-//     )
-//     //add new engineer to array team
-//     team.push(newEngineer);
-//     console.log(team);
-//     nextTeamMember();
-//   });
-// }
-
-//   function addIntern () {
-    
-//     inquirer
-//     .prompt(internQuestions)
-//     .then((response) => {
-//     const newIntern = new Intern (
-//       response.name,
-//       response.id,
-//       response.email,
-//       response.school
-//     )
-//     //add a new intern to array team
-//     team.push(newIntern);
-//     console.log(team);
-//     nextTeamMember();
-//   });
-//   }
-
-//   //Function runs when user selects finish my team option in the list
-//     function finishTeam () {
-//       generateHTML(team);
-//       console.log("Now generating your index.html ...");
-//       writeToFile("/dist/index.html", generateHTMLFile);
-
-// }
-
 
 function init() {
   console.log('Initialization');
@@ -112,47 +31,35 @@ function init() {
     //enquirer prompt, db.query in here.
 
     if (response.option == 'View all Departments') {
-
+        //used a .promise() here to be able to use .then. to run view department query
         db.promise().query(viewDepartments)
         .then( ([results]) =>  console.table(results))
         .then( () => init() );
 
     } else if (response.option == 'View all Roles') {
        
+      //running view roles query
         db.promise().query(viewRoles)
         .then( ([results]) =>  console.table(results))
         .then( () => init() );
     
     } else if (response.option == 'View all Employees') {
         
+      //running view employees query
         db.promise().query(viewEmployees)
         .then( ([results]) =>  console.table(results))
         .then( () => init() );
 
     } else if (response.option == 'Add a Department') {
-        
+        //function call to add dept
         addDepartment();
 
     } else if (response.option == 'Add a Role') {
+      //function call to add a role
         addRole();
     } else if (response.option == 'Add an Employee') {
+      //function call to add an employee
         addEmployee();
-    } else if (response.option == 'Update an Employee Role') {
-        updateEmployeeRole();
-    } else if (response.option == 'Update Employee Managers') {
-        //finishTeam();
-    } else if (response.option == 'View Employees by Manager') {
-        viewEmployeesByManager();
-    } else if (response.option == 'View Employees by Department') {
-        //finishTeam();
-    } else if (response.option == 'Delete Departments') {
-        deleteDepartment();
-    } else if (response.option == 'Delete Roles') {
-        //finishTeam();
-    } else if (response.option == 'Delete Employees') {
-        //finishTeam();
-    } else if (response.option == 'View total budget of department') {
-        //viewBudget();
     }
 });
 }
@@ -167,6 +74,8 @@ FROM role
 INNER JOIN department ON role.department_id = department.id`;
 
 //Query to view all employees
+//Left join is used to returns all records from the left 
+//table and matching records from right table. e.g role.department_id = left, department.id = right
 const viewEmployees = 
 `SELECT employee.id, 
     employee.first_name AS firstname, 
@@ -179,13 +88,15 @@ const viewEmployees =
     LEFT JOIN department ON role.department_id = department.id
     LEFT JOIN employee manager ON employee.manager_id = manager.id`;
 
-
+//Add department function definition
     addDepartment = () => {
+      //Prompt in the terminal to ask questions once user has selected to add department
         inquirer.prompt([
           {
             type: 'input', 
             name: 'addDept',
             message: "What department do you want to add?",
+            //ensures a value is returened. If not a blank value is stored in database.
             validate: addDept => {
               if (addDept) {
                   return true;
@@ -200,8 +111,9 @@ const viewEmployees =
             const sql = `INSERT INTO department (name)
                         VALUES (?)`;
             db.query(sql, answer.addDept, (err, result) => {
-              if (err) throw err; 
+              if (err) throw err; // adds returned value into table
 
+              //view departments query is run
               db.promise().query(viewDepartments)
               .then( ([results]) =>  console.table(results))
               .then( () => init() );
@@ -209,12 +121,15 @@ const viewEmployees =
         });
       };
 
+      //funciton definition to add role
       addRole = () => {
+        //Inquirer prompt tp add vlaues required while adding a role
         inquirer.prompt([
           {
             type: 'input', 
             name: 'role',
             message: "What Role would you like to add?",
+            //validation to avoid saving a null value
             validate: Title => {
               if (Title) {
                   return true;
@@ -229,6 +144,7 @@ const viewEmployees =
             name: 'salary',
             message: "What Salary would you like to add for this Role?",
             validate: Salary => {
+              ///validation to avoid saving value of incorrect type, if salary is not a number then prompt for salary again
               if (isNaN(Salary)) {
                 console.log('Please enter a Salary');
                 return false;
