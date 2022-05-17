@@ -20,7 +20,7 @@ This is a content management system (CMS) that has a command line application us
 
 - [Link to Walkthrough Video](#link-to-walkthrough-video)
 
-- [Screenshots](#screenshot)
+- [Database Design](#database-design)
 
 - [Questions](#questions)
 
@@ -65,9 +65,11 @@ https://github.com/bkhandag/sql-employee-tracker
 
 ## Link to Walkthrough Video:
 
-## Screenshots:
+https://youtu.be/0m3HlHZsBhc
 
-DesiGNED the database schema as shown in the following image:
+## Database Design:
+
+Designed the database schema as shown in the following image:
 
 ![Database schema includes tables labeled “employee,” role,” and “department.”](./Assets/12-sql-homework-demo-01.png)
 

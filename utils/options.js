@@ -10,14 +10,6 @@ const options = [
             'Add a Department',
             'Add a Role',
             'Add an Employee',
-            'Update an Employee Role',
-            'Update Employee Managers',
-            'View Employees by Manager',
-            'View Employees by Department',
-            'Delete Departments',
-            'Delete Roles',
-            'Delete Employees',
-            'View total budget of department',
         ]
       },
 ];
